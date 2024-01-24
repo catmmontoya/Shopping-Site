@@ -82,13 +82,36 @@ app.get("/checkout", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  // TODO: Implement this
-  res.send("Login has not been implemented yet!");
+  res.render("login.html");
 });
 
 app.post("/process-login", (req, res) => {
-  // TODO: Implement this
-  res.send("Login has not been implemented yet!");
+  console.log("hit /process-login");
+  console.log(req.body.username);
+  console.log(req.body.password);
+  for (const user of users) {
+    console.log("hit for-loop");
+    console.log(user);
+    if (
+      req.body.username === user.username &&
+      req.body.password === user.password
+    ) {
+      console.log("hit if-statement");
+      req.session.username = user.username;
+      res.redirect("/all-animals");
+      return;
+    }
+  }
+  res.render("login.html", { message: "Invalid username or password" });
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    }
+    res.redirect("/all-animals");
+  });
 });
 
 app.listen(port, () => {
